@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm install
       - name: Generate algolia-config.json
         run: |
           jq '.appId = env.ALGOLIA_APP_ID | .apiKey = env.ALGOLIA_API_KEY' config/algolia-config.example.json > config/algolia-config.json
@@ -22,8 +21,8 @@ jobs:
           | .organizationId = env.SFCC_ORGANIZATION_ID
           | .shortCode = env.SFCC_SHORT_CODE
           | .siteId = env.SFCC_SITE_ID' config/commerce-api-config.example.json > config/commerce-api-config.json
-      - name: Apply algolia-demo.patch
-        run: git apply algolia-demo.patch
+      - run: git apply algolia-demo.patch
+      - run: npm install
           #      - run: npm run build
       - name: Build and push to Managed Runtime
         env:
