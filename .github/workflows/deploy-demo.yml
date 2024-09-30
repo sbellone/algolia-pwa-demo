@@ -9,6 +9,7 @@ jobs:
   deploy_demo:
     steps:
       - uses: actions/checkout@v4
+      - run: npm install
       - name: Generate algolia-config.json
         run: |
           jq '.appId = env.ALGOLIA_APP_ID | .apiKey = env.ALGOLIA_API_KEY' config/algolia-config.example.json > config/algolia-config.json
@@ -22,5 +23,8 @@ jobs:
           | .siteId = env.SFCC_SITE_ID' config/commerce-api-config.example.json > config/commerce-api-config.json
       - name: Apply algolia-demo.patch
         run: git apply algolia-demo.patch
-      - name: Push demo
+          #      - run: npm run build
+      - name: Build and push to Managed Runtime
+        env:
+          MRT_API_KEY: ${{ secrets.MRT_API_KEY }}
         run: npm run push
