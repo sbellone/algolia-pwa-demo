@@ -11,11 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generate algolia-config.json
+        env:
+          ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
+          ALGOLIA_API_KEY: ${{ vars.ALGOLIA_API_KEY }}
         run: |
           jq '.appId = env.ALGOLIA_APP_ID | .apiKey = env.ALGOLIA_API_KEY' config/algolia-config.example.json > config/algolia-config.json
       - name: Generate commerce-api-config.json
         env: # Copy the secret in an environment variable
           SFCC_SLAS_CLIENT_ID: ${{ secrets.SFCC_SLAS_CLIENT_ID }}
+          SFCC_ORGANIZATION_ID: ${{ vars.SFCC_ORGANIZATION_ID }}
+          SFCC_SHORT_CODE: ${{ vars.SFCC_SHORT_CODE }}
+          SFCC_SITE_ID: ${{ vars.SFCC_SITE_ID }}
         run: |
           jq '.clientId = env.SFCC_SLAS_CLIENT_ID
           | .organizationId = env.SFCC_ORGANIZATION_ID
@@ -26,5 +32,6 @@ jobs:
           #      - run: npm run build
       - name: Build and push to Managed Runtime
         env:
+          MRT_USER: ${{ vars.MRT_USER }}
           MRT_API_KEY: ${{ secrets.MRT_API_KEY }}
         run: npm run push
